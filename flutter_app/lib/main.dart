@@ -144,7 +144,7 @@ class _G1HomePageState extends State<G1HomePage> {
       children: [
         new Image.asset(
           'images/bg_sign_in.png',
-          width: 400,
+          width: MediaQuery.of(context).size.width, // 屏幕宽度,
           height: 240,
           fit: BoxFit.cover,
         ),
@@ -181,8 +181,7 @@ class _G1HomePageState extends State<G1HomePage> {
         ));
 
     return new Scaffold(
-        body: Center(
-            child: new Column(
+        body: new Column(
       children: [
         new Expanded(
           child: stack,
@@ -196,7 +195,7 @@ class _G1HomePageState extends State<G1HomePage> {
           flex: 1,
         )
       ],
-    )));
+    ));
   }
 }
 
