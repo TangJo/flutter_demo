@@ -110,25 +110,95 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-        body: new ListView(
-          children: [
-            new Image.asset(
-              'images/lake.jpg',
-              width: 600.0,
-              height: 240.0,
-              fit: BoxFit.cover,
-            ),
-            titleSection,
-            buttonSection,
-            textSection,
-          ],
-        ),
-      ),
+      //   home: Scaffold(
+      //     body: new ListView(
+      //       children: [
+      //         new Image.asset(
+      //           'images/lake.jpg',
+      //           width: 600.0,
+      //           height: 240.0,
+      //           fit: BoxFit.cover,
+      //         ),
+      //         titleSection,
+      //         buttonSection,
+      //         textSection,
+      //       ],
+      //     ),
+      //   ),
+      // );
+      home: G1HomePage(),
     );
   }
 }
 
+class G1HomePage extends StatefulWidget {
+  @override
+  _G1HomePageState createState() => _G1HomePageState();
+}
+
+class _G1HomePageState extends State<G1HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    var stack = new Stack(
+      alignment: const Alignment(0.0, 1.5),
+      children: [
+        new Image.asset(
+          'images/bg_sign_in.png',
+          width: 400,
+          height: 240,
+          fit: BoxFit.cover,
+        ),
+        new Container(
+          padding: const EdgeInsets.only(bottom: 0.0),
+          child: new Image.asset(
+            'images/icon_logo.png',
+            width: 100.0,
+            height: 100.0,
+            fit: BoxFit.cover,
+          ),
+        )
+      ],
+    );
+
+    MaterialButton searchButton = new MaterialButton(
+      textColor: Colors.white,
+      color: Colors.blue,
+      height: 40,
+      minWidth: 300,
+      //圆角
+      shape: RoundedRectangleBorder(
+          side: BorderSide.none,
+          borderRadius: BorderRadius.all(Radius.circular(50))),
+      onPressed: () {
+        print("object 2333");
+      },
+      child: new Text("SEARCH BLUETOOTH"),
+    );
+
+    Text bottomText = new Text("Current Version 1.0.0",
+        style: TextStyle(
+          color: Colors.grey,
+        ));
+
+    return new Scaffold(
+        body: Center(
+            child: new Column(
+      children: [
+        new Expanded(
+          child: stack,
+          flex: 4,
+        ),
+        new Expanded(child: new Center(child: searchButton), flex: 5),
+        new Expanded(
+          child: new Center(
+            child: bottomText,
+          ),
+          flex: 1,
+        )
+      ],
+    )));
+  }
+}
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -174,12 +244,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
