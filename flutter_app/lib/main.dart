@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'package:english_words/english_words.dart';
 import 'dart:async' show Future;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
+import 'package:permission_handler/permission_handler.dart';
+
+import 'bluetooth/bluetooth_list.dart';
 
 void main() {
   runApp(MyApp());
+  SystemUiOverlayStyle systemUiOverlayStyle =
+      SystemUiOverlayStyle(statusBarColor: Colors.blue);
+  SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
 }
 
 class MyApp extends StatelessWidget {
@@ -108,8 +114,7 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
     return new MaterialApp(
       title: "Flutter Demo",
       theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue, platform: TargetPlatform.iOS),
       //   home: Scaffold(
       //     body: new ListView(
       //       children: [
@@ -126,6 +131,10 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
       //     ),
       //   ),
       // );
+      routes: {
+        '/list': (context) => NearbyBluetoothList(),
+        '/home': (context) => G1HomePage(),
+      },
       home: G1HomePage(),
     );
   }
@@ -160,6 +169,36 @@ class _G1HomePageState extends State<G1HomePage> {
       ],
     );
 
+    /// 授予定位权限返回true， 否则返回false
+    Future<bool> requestLocationPermission() async {
+      //获取当前的权限
+      var status = await Permission.location.status;
+      if (status == PermissionStatus.granted) {
+        //已经授权
+        return true;
+      } else {
+        //未授权则发起一次申请
+        status = await Permission.location.request();
+        if (status == PermissionStatus.granted) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+
+    /// 动态申请定位权限
+    void requestPermission() async {
+      // 申请权限
+      bool hasLocationPermission = await requestLocationPermission();
+      if (hasLocationPermission) {
+        // 权限申请通过
+        Navigator.of(context).pushNamed("/list");
+      } else {
+        print("位置权限未申请成功");
+      }
+    }
+
     MaterialButton searchButton = new MaterialButton(
       textColor: Colors.white,
       color: Colors.blue,
@@ -171,6 +210,7 @@ class _G1HomePageState extends State<G1HomePage> {
           borderRadius: BorderRadius.all(Radius.circular(50))),
       onPressed: () {
         print("object 2333");
+        requestPermission();
       },
       child: new Text("SEARCH BLUETOOTH"),
     );
@@ -181,21 +221,30 @@ class _G1HomePageState extends State<G1HomePage> {
         ));
 
     return new Scaffold(
-        body: new Column(
-      children: [
-        new Expanded(
-          child: stack,
-          flex: 4,
-        ),
-        new Expanded(child: new Center(child: searchButton), flex: 5),
-        new Expanded(
-          child: new Center(
-            child: bottomText,
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize:
+              Size.fromHeight(MediaQuery.of(context).size.height * 0.07),
+          child: SafeArea(
+            top: true,
+            child: Offstage(),
           ),
-          flex: 1,
-        )
-      ],
-    ));
+        ),
+        body: new Column(
+          children: [
+            new Expanded(
+              child: stack,
+              flex: 4,
+            ),
+            new Expanded(child: new Center(child: searchButton), flex: 5),
+            new Expanded(
+              child: new Center(
+                child: bottomText,
+              ),
+              flex: 1,
+            )
+          ],
+        ));
   }
 }
 
